@@ -67,7 +67,7 @@ function recurse() {
     if [ $recursed ]; then
 	echo recursed > /dev/null
     else
-	echo '********* result is ' $prefix
+	echo $prefix
     fi
 }
 
