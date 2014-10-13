@@ -21,8 +21,8 @@ Examples:
 ```bash
 $ # short flag -f takes no argument, -x takes an argument
 $ # the following are the equivalent:
-$ cmd -f -x value  # separated options, separated value
-$ cmd -fx value    # concatenated options, separated value
+$ cmd -f -x value   # separated options, separated value
+$ cmd -fx value     # concatenated options, separated value
 $ cmd -f -xvalue    # separated options, concatenated value
 $ cmd -fxvalue      # concatenated options, concatenated value
 
