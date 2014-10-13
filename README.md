@@ -21,10 +21,10 @@ Examples:
 ```bash
 $ # short flag -f takes no argument, -x takes an argument
 $ # the following are the equivalent:
-$ cmd -f -x x_value  # separated options, separated value
-$ cmd -fx x_value    # concatenated options, separated value
-$ cmd -f -xxvalue    # separated options, concatenated value
-$ cmd -fxxvalue      # concatenated options, concatenated value
+$ cmd -f -x value  # separated options, separated value
+$ cmd -fx value    # concatenated options, separated value
+$ cmd -f -xvalue    # separated options, concatenated value
+$ cmd -fxvalue      # concatenated options, concatenated value
 
 $ # long options: --flag takes no argument, --xopt takes an argument
 $ cmd --flag --xopt=value # value is appended with =
