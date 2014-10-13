@@ -71,5 +71,29 @@ function recurse() {
     fi
 }
 
-recurse $0 "$@"
+# call like this:
 
+# recurse simple_program "$@" | \
+#     while read line ; do
+# 	echo $line ;
+#     done
+
+# example
+recurse myprogram -i "one two" --letter="a b c d" "last argument"
+# returns: 
+# myprogram -i one --letter a last
+# myprogram -i one --letter a argument
+# myprogram -i one --letter b last
+# myprogram -i one --letter b argument
+# myprogram -i one --letter c last
+# myprogram -i one --letter c argument
+# myprogram -i one --letter d last
+# myprogram -i one --letter d argument
+# myprogram -i two --letter a last
+# myprogram -i two --letter a argument
+# myprogram -i two --letter b last
+# myprogram -i two --letter b argument
+# myprogram -i two --letter c last
+# myprogram -i two --letter c argument
+# myprogram -i two --letter d last
+# myprogram -i two --letter d argument
