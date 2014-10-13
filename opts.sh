@@ -103,7 +103,7 @@ function GetOpts() {
     done 
 }
 
-GetOpts $*
+GetOpts "$*"
 
 # show results
 echo
