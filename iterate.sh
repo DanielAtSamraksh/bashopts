@@ -3,6 +3,35 @@
 set -e
 # set -x
 
+usage() {
+    cat <<EOF
+$0 program arguments
+
+Execute pragram for every argument combination. Combinations are given as single arguments contianing separating spaces.
+
+Examples:
+ 
+$ $0 echo -i 'one two three' # runs: 
+echo -i one 
+echo -i two
+echo -i three
+
+$ $0 echo -i '1 2' -j '3 4' '5 6' # runs: 
+echo -i 1 -j 3 5
+echo -i 1 -j 3 6
+echo -i 1 -j 4 5
+echo -i 1 -j 4 6
+echo -i 2 -j 3 5
+echo -i 2 -j 3 6
+echo -i 2 -j 4 5
+echo -i 2 -j 4 6
+
+Calling $0 with no arguments generates this help message.
+EOF
+}
+
+if [ $# -lt 1 ]; then usage; exit 0; fi
+ 
 # set debug to nothing to turn off
 debug=
 
