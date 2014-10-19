@@ -3,6 +3,9 @@
 set -e
 # set -x
 
+# set debug to nothing to turn off
+debug=
+
 # code borrowed from http://stackoverflow.com/questions/17016007/bash-getopts-optional-arguments
 function Die()
 {
@@ -10,34 +13,38 @@ function Die()
     exit 1
 }
 
-
+# recurse prefix arg1 arg2 . . . = recurse (prefix++arg1) arg2 . . . 
+# recurse prefix [] = execute prefix
 function recurse() {
     local prefix=$1
-    local recursed=
     shift
+    local recursed=
     # while there still are arguments do this:
-    while [ $# -gt 0 ]
-    do
+    while [ $# -gt 0 ] ; do
 	# save the first argument in $@ and then shift $@
 	# example before: $@ = arg1 arg2 arg3
 	#         after: $opt = arg1, $@ = arg2 arg3
 	opt=$1
         shift
-	#echo
-	#echo "opt = $opt"
+	[ $debug ] &&  >&2 echo "current opt = $opt"
         case ${opt} in
 
 	    --*=*)
-		opt1=`echo "${opt}" | perl -pe 's/(.+)=.+/$1/'`
-		opt2=`echo "${opt}" | perl -pe 's/.+=(.+)/$1/'`
+		[ $debug ] &&  >&2 echo "split equal ($opt)"
+		opt1=`echo "${opt}" | perl -pe 's/([^=]+)=.*/$1/'`
+		opt2=`echo "${opt}" | perl -pe 's/[^=]+=(.*)/$1/'`
+		# echo opt1 $opt1
+		# echo opt2 $opt2
 		set -- "${opt1}" "${opt2}" "$@"
 		;;
 
 	    --*)
+		[ $debug ] &&  >&2 echo "adding to prefix ($prefix $opt)"
 		prefix="$prefix $opt"
 		;;
 	    
 	    -??*)
+		[ $debug ] &&  >&2 echo "split short ($opt)"
 		# We've already checked for --*, so these are multiple
 		# arguments Split them in two, push them on $@ and go
 		# through the loop again. 
@@ -48,9 +55,10 @@ function recurse() {
 		;;
 
 	    *\ *)
-		#echo "blank in $opt"
+		[ $debug ] && >&2 echo "blank in $opt, recurse"
 		for v in $opt; do
 		    #echo "> $prefix $v $@"
+		    [ $debug ] && echo recurse "$prefix $v" "$@"
 		    recurse "$prefix $v" "$@"
 		done
 		recursed=1
@@ -58,26 +66,20 @@ function recurse() {
 		;;
 
             *)
+		[ $debug ] && >&2 echo "adding to prefix ($prefix $opt)"
 		prefix="$prefix $opt"
 		#echo "prefix is now $prefix"
 		;;
 
         esac
     done
-    if [ $recursed ]; then
-	echo recursed > /dev/null
-    else
-	echo $prefix
+    if [ ! $recursed ]; then
+	[ $debug ] && >&2 echo "executing $prefix"
+	$prefix
     fi
 }
 
-# call like this:
-
-recurse "$@" | \
-    while read line ; do
-	# you can do something else here if you want.
-	echo $line ;
-    done
+recurse "" "$@"
 
 # example
 # > recurse myprogram -i "one two" --letter="a b c d" "last argument"
