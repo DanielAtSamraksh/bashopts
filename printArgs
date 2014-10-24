@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+if ./iterateOrNot.sh "$0" "$@" ; then 
+    echo iterated
+    exit;
+fi
+# the above if statement can be shortened to:
+#   "./iterateOrNot.sh "$0" "$@" && exit".
+# If we get here, we have not iterated.
+# Print out the arguments
+
+echo "$@"

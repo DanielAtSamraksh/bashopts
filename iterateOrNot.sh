@@ -5,12 +5,21 @@ set -e
 
 usage() {
     cat <<EOF
+Usage:
+
+Calling $0 with no arguments generates this help message.
+
 $0 program arguments
 
-Execute pragram for every argument combination. Combinations are given as single arguments contianing separating spaces. If no iteration happens, exit with an error (1). 
+Execute pragram for every argument combination. Combinations are given
+as single arguments contianing separating spaces. If no iteration
+happens, exit with an error (1). 
 
-Examples:
- 
+This script was designed to allow other scripts to easily take
+multiple arguments by including the line "$0 && exit".
+
+Examples of how it works:
+
 $ $0 echo -i 'one two three' # runs: 
 echo -i one 
 echo -i two
@@ -28,7 +37,31 @@ echo -i 2 -j 4 6
 
 $ $0 echo -i 1 || echo "error" $ echos error.
 
-Calling $0 with no arguments generates this help message.
+Example of how it might be used:
+
+$ cat > printArgs <<End
+#!/usr/bin/env bash
+if ./iterateOrNot.sh "\\\$0" "\\\$@" ; then 
+    echo iterated
+    exit;
+fi
+# the above if statement can be shortened to:
+#   "./iterateOrNot.sh "\\\$0" "\\\$@" && exit".
+# If we get here, we have not iterated.
+# Print out the arguments
+
+echo "\\\$@"
+End
+
+$ chmod +x printArgs
+
+$ ./printArgs '1 2' '3 4'
+1 3
+1 4
+2 3
+2 4
+iterated
+
 EOF
 }
 
@@ -97,7 +130,8 @@ function recurse() {
 
     if [ ! $recursed ]; then return 1; fi
 
-    echo $prefix
+    # echo $prefix
+    $prefix
 
 }
 
